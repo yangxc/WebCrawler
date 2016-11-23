@@ -1,2 +1,3 @@
 # WebCrawler
 用于进行互联网采集的云服务
+依赖于mysql服务和mongo服务
