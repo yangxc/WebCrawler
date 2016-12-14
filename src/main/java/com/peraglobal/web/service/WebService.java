@@ -1,4 +1,4 @@
-package com.peraglobal.service;
+package com.peraglobal.web.service;
 
 import java.util.Date;
 import java.util.List;
@@ -6,9 +6,9 @@ import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import com.peraglobal.mapper.WebMapper;
-import com.peraglobal.model.Web;
-import com.peraglobal.model.WebConst;
+import com.peraglobal.web.mapper.WebMapper;
+import com.peraglobal.web.model.Web;
+import com.peraglobal.web.model.WebConst;
 
 /**
  *  <code>WebService.java</code>

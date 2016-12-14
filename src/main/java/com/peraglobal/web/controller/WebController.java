@@ -1,4 +1,4 @@
-package com.peraglobal.controller;
+package com.peraglobal.web.controller;
 
 import java.util.List;
 
@@ -12,8 +12,8 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.peraglobal.model.Web;
-import com.peraglobal.service.WebService;
+import com.peraglobal.web.model.Web;
+import com.peraglobal.web.service.WebService;
 
 
 /**

@@ -1,4 +1,4 @@
-package com.peraglobal.model;
+package com.peraglobal.web.model;
 
 import java.util.Date;
 

@@ -1,4 +1,4 @@
-package com.peraglobal.mapper;
+package com.peraglobal.web.mapper;
 
 import java.util.List;
 
@@ -8,7 +8,7 @@ import org.apache.ibatis.annotations.Mapper;
 import org.apache.ibatis.annotations.Select;
 import org.apache.ibatis.annotations.Update;
 
-import com.peraglobal.model.Web;
+import com.peraglobal.web.model.Web;
 
 /**
  *  <code>WebMapper.java</code>
