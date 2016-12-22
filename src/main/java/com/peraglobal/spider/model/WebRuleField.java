@@ -57,7 +57,5 @@ public class WebRuleField implements Serializable {
 	public void setFieldText(String fieldText) {
 		this.fieldText = fieldText;
 	}
-	
-	
 
 }
