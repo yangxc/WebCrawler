@@ -38,18 +38,18 @@ public class WebService {
 	
 	/**
 	 * 根据 WEB 采集 ID 查询 WEB 采集对象
-	 * @param webId  WEB 采集 ID
+	 * @param crawlerId  WEB 采集 ID
 	 * @return Web  WEB 采集对象
 	 * @throws Exception
 	 */
-	public Web getWeb(String webId) throws Exception {
-		return webMapper.getWeb(webId);
+	public Web getWeb(String crawlerId) throws Exception {
+		return webMapper.getWeb(crawlerId);
 	}
 
 	/**
 	 * 创建 WEB 采集
 	 * @param WEB 采集对象
-	 * @return webId  WEB 采集 ID
+	 * @return crawlerId  WEB 采集 ID
 	 * @throws Exception
 	 */
 	public String createWeb(Web web) throws Exception {
@@ -57,31 +57,31 @@ public class WebService {
 		Web c = webMapper.getWebByWebName(web);
 		if(c == null) {
 			// uuid 任务 ID
-			web.setWebId(java.util.UUID.randomUUID().toString());
+			web.setCrawlerId(java.util.UUID.randomUUID().toString());
 			// 默认状态为：就绪
 			web.setState(WebConst.STATE_READY);
 			web.setCreateTime(new Date());
 			web.setUpdateTime(new Date());
 			webMapper.createWeb(web);
-			return web.getWebId();
+			return web.getCrawlerId();
 		}
 		return null;
 	}
 
 	/**
 	 * 通过 WEB 采集 ID 删除对象
-	 * @param webId  WEB 采集 ID
+	 * @param crawlerId  WEB 采集 ID
 	 * @throws Exception
 	 */
-	public void removeWeb(String webId) throws Exception {
+	public void removeWeb(String crawlerId) throws Exception {
 		// 通过 WEB 采集 ID 查询对象是否存在
-		Web c = webMapper.getWeb(webId);
+		Web c = webMapper.getWeb(crawlerId);
 		if(c != null) {
 			// 判断 WEB 采集对象是否在运行，如果状态为：非就绪，则存在任务调度器中
 			if(c.getState().equals(WebConst.STATE_READY)) {
 				// 后续完善，停止任务
 			}
-			webMapper.removeWeb(webId);
+			webMapper.removeWeb(crawlerId);
 		}
 	}
 
@@ -92,7 +92,7 @@ public class WebService {
 	 */
 	public void editWeb(Web web) throws Exception {
 		// 查询 WEB 采集对象是否存在
-		Web c = webMapper.getWeb(web.getWebId());
+		Web c = webMapper.getWeb(web.getCrawlerId());
 		if(c != null) {
 			// 判断 WEB 采集对象是否在运行，如果状态为：非就绪，则存在任务调度器中
 			if(c.getState().equals(WebConst.STATE_READY)) {
@@ -105,11 +105,11 @@ public class WebService {
 
 	/**
 	 * 开始 WEB 采集
-	 * @param webId  WEB 采集 ID
+	 * @param crawlerId  WEB 采集 ID
 	 * @throws Exception
 	 */
-	public void start(String webId) throws Exception {
-		Web c = webMapper.getWeb(webId);
+	public void start(String crawlerId) throws Exception {
+		Web c = webMapper.getWeb(crawlerId);
 		//  WEB 采集状态为：非开始，则开始任务
 		if(c != null && !c.getState().equals(WebConst.STATE_STRAT)) {
 			// 更新任务状态
@@ -121,11 +121,11 @@ public class WebService {
 
 	/**
 	 * 停止 WEB 采集
-	 * @param webId  WEB 采集 ID
+	 * @param crawlerId  WEB 采集 ID
 	 * @throws Exception
 	 */
-	public void stop(String webId) throws Exception {
-		Web t = webMapper.getWeb(webId);
+	public void stop(String crawlerId) throws Exception {
+		Web t = webMapper.getWeb(crawlerId);
 		//  WEB 采集状态为：开始，则停止
 		if(t != null && t.getState().equals(WebConst.STATE_STRAT)) {
 			// 更新 WEB 采集状态为停止

@@ -7,12 +7,12 @@ public class Web {
 	/**
 	 * @category 采集 ID
 	 */
-	private String webId;
+	private String crawlerId;
 	
 	/**
 	 * @category 采集名称
 	 */
-	private String webName;
+	private String crawlerName;
 	
 	/**
 	 * @category 组 ID
@@ -44,20 +44,21 @@ public class Web {
 	 */
 	private Date updateTime;
 
-	public String getWebId() {
-		return webId;
+
+	public String getCrawlerId() {
+		return crawlerId;
 	}
 
-	public void setWebId(String webId) {
-		this.webId = webId;
+	public void setCrawlerId(String crawlerId) {
+		this.crawlerId = crawlerId;
+	}
+	
+	public String getCrawlerName() {
+		return crawlerName;
 	}
 
-	public String getWebName() {
-		return webName;
-	}
-
-	public void setWebName(String webName) {
-		this.webName = webName;
+	public void setCrawlerName(String crawlerName) {
+		this.crawlerName = crawlerName;
 	}
 
 	public String getGroupId() {

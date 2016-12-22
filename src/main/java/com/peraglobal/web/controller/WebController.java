@@ -52,15 +52,15 @@ public class WebController {
 	
 	/**
 	 * 获得 Web 采集
-	 * @param webId Web 采集 ID
+	 * @param crawlerId Web 采集 ID
 	 * @return Web 采集
 	 * @since 1.0
 	 */
 	@SuppressWarnings("static-access")
-	@RequestMapping(value = "/getWeb/{webId}", method = RequestMethod.GET)
-	public ResponseEntity<Web> getWeb(@PathVariable("webId") String webId) {
+	@RequestMapping(value = "/getWeb/{crawlerId}", method = RequestMethod.GET)
+	public ResponseEntity<Web> getWeb(@PathVariable("crawlerId") String crawlerId) {
 		try {
-			Web web = webService.getWeb(webId);
+			Web web = webService.getWeb(crawlerId);
 			return new ResponseEntity<>(HttpStatus.OK).accepted().body(web);
 		} catch (Exception e) {
 			return new ResponseEntity<>(HttpStatus.EXPECTATION_FAILED);
@@ -77,9 +77,9 @@ public class WebController {
 	@RequestMapping(value = "/createWeb", method = RequestMethod.POST, consumes = MediaType.APPLICATION_JSON_VALUE)
 	public ResponseEntity<String> createWeb(@RequestBody Web web) {
 		try {
-			String webId = webService.createWeb(web);
-			if(webId != null) {
-				return new ResponseEntity<>(HttpStatus.CREATED).accepted().body(webId);
+			String crawlerId = webService.createWeb(web);
+			if(crawlerId != null) {
+				return new ResponseEntity<>(HttpStatus.CREATED).accepted().body(crawlerId);
 			}
 		} catch (Exception e) {}
 		return new ResponseEntity<>(HttpStatus.EXPECTATION_FAILED);
@@ -87,14 +87,14 @@ public class WebController {
 	
 	/**
 	 * 移除 Web 采集
-	 * @param webId Web 采集 ID
+	 * @param crawlerId Web 采集 ID
 	 * @return 状态码
 	 * @since 1.0
 	 */
-	@RequestMapping(value = "/removeWeb/{webId}", method = RequestMethod.DELETE)
-	public ResponseEntity<?> removeWeb(@PathVariable("webId") String webId) {
+	@RequestMapping(value = "/removeWeb/{crawlerId}", method = RequestMethod.DELETE)
+	public ResponseEntity<?> removeWeb(@PathVariable("crawlerId") String crawlerId) {
 		try {
-			webService.removeWeb(webId);
+			webService.removeWeb(crawlerId);
 			return new ResponseEntity<>(HttpStatus.OK);
 		} catch (Exception e) {}
 		return new ResponseEntity<>(HttpStatus.EXPECTATION_FAILED);
@@ -124,7 +124,7 @@ public class WebController {
 	@RequestMapping(value = "/start", method = RequestMethod.PUT, consumes = MediaType.APPLICATION_JSON_VALUE)
 	public ResponseEntity<?> start(@RequestBody Web web) {
 		try {
-			webService.start(web.getWebId());
+			webService.start(web.getCrawlerId());
 			return new ResponseEntity<>(HttpStatus.OK);
 		} catch (Exception e) {}
 		return new ResponseEntity<>(HttpStatus.EXPECTATION_FAILED);
@@ -140,7 +140,7 @@ public class WebController {
 	@RequestMapping(value = "/stop", method = RequestMethod.PUT, consumes = MediaType.APPLICATION_JSON_VALUE)
 	public ResponseEntity<?> stop(@RequestBody Web web) {
 		try {
-			webService.stop(web.getWebId());
+			webService.stop(web.getCrawlerId());
 			return new ResponseEntity<>(HttpStatus.OK);
 		} catch (Exception e) {}
 		return new ResponseEntity<>(HttpStatus.EXPECTATION_FAILED);

@@ -33,11 +33,11 @@ public interface WebMapper {
    
 	/**
 	 * 根据 ID  WEB 采集
-	 * @param webId  WEB 采集 ID
+	 * @param crawlerId  WEB 采集 ID
 	 * @return Web 任务
 	 */
-    @Select("select * from Web where webId = #{webId}")
-    public Web getWeb(String webId);
+    @Select("select * from Web where crawlerId = #{crawlerId}")
+    public Web getWeb(String crawlerId);
    
 	/**
 	 * 根据 WEB 采集名称和组 ID  WEB 采集
@@ -52,28 +52,28 @@ public interface WebMapper {
 	 * 创建 WEB 采集
 	 * @param Web  WEB 采集对象
 	 */
-    @Insert("insert into Web (webId, webName, groupId, groupName, express, state, createTime, updateTime) values (#{webId}, #{webName}, #{groupId}, #{groupName}, #{express}, #{state}, #{createTime}, #{updateTime})")  
+    @Insert("insert into Web (crawlerId, webName, groupId, groupName, express, state, createTime, updateTime) values (#{crawlerId}, #{webName}, #{groupId}, #{groupName}, #{express}, #{state}, #{createTime}, #{updateTime})")  
     public void createWeb(Web web);
 
     /**
 	 * 移除 WEB 采集
-	 * @param webId 任务 ID
+	 * @param crawlerId 任务 ID
 	 */
-    @Delete("delete from Web where webId = #{webId}")
-	public void removeWeb(String webId);
+    @Delete("delete from Web where crawlerId = #{crawlerId}")
+	public void removeWeb(String crawlerId);
 
 	/**
 	 * 编辑 WEB 采集
 	 * @param Web  WEB 采集对象
 	 */
-    @Update("update Web set webName = #{webName}, groupName = #{groupName}, express = #{express}, updateTime = #{updateTime} where webId = #{webId}")
+    @Update("update Web set webName = #{webName}, groupName = #{groupName}, express = #{express}, updateTime = #{updateTime} where crawlerId = #{crawlerId}")
 	public void editWeb(Web web);
 
 	/**
 	 * 根据 WEB 采集 ID 修改状态
 	 * @param Web  WEB 采集对象
 	 */
-    @Update("update Web set state = #{state}, updateTime = #{updateTime} where webId = #{webId}")
+    @Update("update Web set state = #{state}, updateTime = #{updateTime} where crawlerId = #{crawlerId}")
 	public int updateStateByWeb(Web web);
 
 }
