@@ -36,6 +36,7 @@ public class WebProcessor implements PageProcessor {
 		this.webRuleFields = this.webRule.getWebRuleFields();
 	}
     
+	// 部分一：抓取网站的相关配置，包括编码、抓取间隔、重试次数等
 	private Site site = Site.me()
 			.setRetryTimes(webRule.getRetryTimes() != 0 ? webRule.getRetryTimes() : 3)
 			.setSleepTime(webRule.getSleepTime() != 0 ? webRule.getSleepTime() : 1000)
@@ -62,6 +63,7 @@ public class WebProcessor implements PageProcessor {
     }
     */
 	
+	// process是定制爬虫逻辑的核心接口，在这里编写抽取逻辑
 	@Override
 	public void process(Page page) {
 		
@@ -70,22 +72,28 @@ public class WebProcessor implements PageProcessor {
 				
 				if (WebConst.XPATH.equals(field.getFieldType())) { // xpath
 					if (WebConst.ADD.equals(field.getType())) { 
-						// addTargetRequests
+						// addTargetRequests // 部分三：从页面发现后续的url地址来抓取
 						page.addTargetRequests(page.getHtml().links().xpath(field.getFieldText()).all());
 					} else { 
-						// putField
+						// putField // 部分二：定义如何抽取页面信息，并保存下来
 						page.putField(field.getFieldKey(), page.getHtml().xpath(field.getFieldText()).toString());
 					}
+					
 				} else if (WebConst.REGEX.equals(field.getFieldType())) { // regex
 					if (WebConst.ADD.equals(field.getType())) {
+						// 部分三：从页面发现后续的url地址来抓取
 						page.addTargetRequests(page.getHtml().links().regex(field.getFieldText()).all());
 					} else {
+						// 部分二：定义如何抽取页面信息，并保存下来
 						page.putField(field.getFieldKey(), page.getUrl().regex(field.getFieldText()).toString());
 					}
+					
 				} else { // css 
 					if (WebConst.ADD.equals(field.getType())) {
+						// 部分三：从页面发现后续的url地址来抓取
 						page.addTargetRequests(page.getHtml().links().css(field.getFieldText()).all());
 					} else {
+						// 部分二：定义如何抽取页面信息，并保存下来
 						page.putField(field.getFieldKey(), page.getUrl().css(field.getFieldText()).toString());
 					}
 				}
