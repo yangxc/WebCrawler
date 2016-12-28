@@ -142,7 +142,7 @@ public class WebController {
 	 * @return 状态码
 	 * @since 1.0
 	 */
-	@RequestMapping(value = "/stop", method = RequestMethod.PUT, consumes = MediaType.APPLICATION_JSON_VALUE)
+	@RequestMapping(value = "/stop", method = RequestMethod.PUT)
 	public ResponseEntity<?> stop(@RequestBody String crawlerId) {
 		try {
 			webService.stop(crawlerId);

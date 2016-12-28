@@ -50,7 +50,7 @@ public class WebPipeline implements Pipeline{
 					metadata = new Metadata();
 					metadata.setCrawlerId(web.getCrawlerId());
 					metadata.setMd(md5);
-					metadata.setMetadta(entry.getKey() + ":\t" + entry.getValue());
+					metadata.setMetadata(entry.getKey() + ":\t" + entry.getValue());
 					metadataService.createMetadata(metadata);
 					
 					// 监控日志，后续完善
