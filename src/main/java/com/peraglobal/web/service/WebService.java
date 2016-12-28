@@ -28,6 +28,9 @@ public class WebService {
 	@Autowired
     private WebMapper webMapper;
 	
+	@Autowired
+	private SpiderService spiderService;
+	
 	/**
 	 * 根据组 ID 查询 WEB 采集列表
 	 * @param groupId 组 ID
@@ -64,7 +67,11 @@ public class WebService {
 		Web c = webMapper.getWebByWebName(web);
 		if(c == null) {
 			// uuid 任务 ID
-			web.setCrawlerId(java.util.UUID.randomUUID().toString());
+			if (null == webCrawler.getCrawlerId()) {
+				web.setCrawlerId(java.util.UUID.randomUUID().toString());
+			} else {
+				web.setCrawlerId(webCrawler.getCrawlerId());
+			}
 			// 默认状态为：就绪
 			web.setState(WebConst.STATE_READY);
 			
@@ -127,6 +134,7 @@ public class WebService {
 			c.setState(WebConst.STATE_STRAT);
 			c.setUpdateTime(new Date());
 			webMapper.updateStateByWeb(c);
+			spiderService.start(c);
 		}
 	}
 

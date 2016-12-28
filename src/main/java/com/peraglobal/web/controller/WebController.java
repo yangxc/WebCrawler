@@ -124,10 +124,10 @@ public class WebController {
 	 * @return 状态码
 	 * @since 1.0
 	 */
-	@RequestMapping(value = "/start", method = RequestMethod.PUT, consumes = MediaType.APPLICATION_JSON_VALUE)
-	public ResponseEntity<?> start(@RequestBody Web web) {
+	@RequestMapping(value = "/start", method = RequestMethod.PUT)
+	public ResponseEntity<?> start(@RequestBody String crawlerId) {
 		try {
-			webService.start(web.getCrawlerId());
+			webService.start(crawlerId);
 			return new ResponseEntity<>(HttpStatus.OK);
 		} catch (Exception e) {}
 		return new ResponseEntity<>(HttpStatus.EXPECTATION_FAILED);
@@ -141,9 +141,9 @@ public class WebController {
 	 * @since 1.0
 	 */
 	@RequestMapping(value = "/stop", method = RequestMethod.PUT, consumes = MediaType.APPLICATION_JSON_VALUE)
-	public ResponseEntity<?> stop(@RequestBody Web web) {
+	public ResponseEntity<?> stop(@RequestBody String crawlerId) {
 		try {
-			webService.stop(web.getCrawlerId());
+			webService.stop(crawlerId);
 			return new ResponseEntity<>(HttpStatus.OK);
 		} catch (Exception e) {}
 		return new ResponseEntity<>(HttpStatus.EXPECTATION_FAILED);
