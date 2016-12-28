@@ -3,10 +3,10 @@ package com.peraglobal.web.service;
 import java.util.Date;
 import java.util.List;
 
-import org.json.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import com.alibaba.fastjson.JSONObject;
 import com.peraglobal.spider.model.WebCrawler;
 import com.peraglobal.web.mapper.WebMapper;
 import com.peraglobal.web.model.Web;
@@ -74,9 +74,8 @@ public class WebService {
 			}
 			// 默认状态为：就绪
 			web.setState(WebConst.STATE_READY);
-			
-			JSONObject jsonObj = new JSONObject(webCrawler.getWebRule());  
-			web.setExpress(jsonObj.toString());
+			String str = JSONObject.toJSONString(webCrawler.getWebRule());
+			web.setExpress(str);
 			
 			web.setCreateTime(new Date());
 			web.setUpdateTime(new Date());
@@ -127,14 +126,14 @@ public class WebService {
 	 * @throws Exception
 	 */
 	public void start(String crawlerId) throws Exception {
-		Web c = webMapper.getWeb(crawlerId);
+		Web crawler = webMapper.getWeb(crawlerId);
 		//  WEB 采集状态为：非开始，则开始任务
-		if(c != null && !c.getState().equals(WebConst.STATE_STRAT)) {
+		if(crawler != null && !crawler.getState().equals(WebConst.STATE_STRAT)) {
 			// 更新任务状态
-			c.setState(WebConst.STATE_STRAT);
-			c.setUpdateTime(new Date());
-			webMapper.updateStateByWeb(c);
-			spiderService.start(c);
+			crawler.setState(WebConst.STATE_STRAT);
+			crawler.setUpdateTime(new Date());
+			webMapper.updateStateByWeb(crawler);
+			spiderService.start(crawler);
 		}
 	}
 

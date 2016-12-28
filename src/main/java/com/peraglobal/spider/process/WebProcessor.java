@@ -2,8 +2,8 @@ package com.peraglobal.spider.process;
 
 import java.util.List;
 
-import org.json.JSONObject;
-
+import com.alibaba.fastjson.JSON;
+import com.alibaba.fastjson.JSONObject;
 import com.peraglobal.spider.model.WebConst;
 import com.peraglobal.spider.model.WebRule;
 import com.peraglobal.spider.model.WebRuleField;
@@ -31,15 +31,14 @@ public class WebProcessor implements PageProcessor {
 	public WebProcessor (Web web) {
 		this.web = web;
 		// 构建 Json 对象
-		JSONObject jsonObj = new JSONObject(web.getExpress());  
-		this.webRule = (WebRule)JSONObject.wrap(jsonObj);
+		this.webRule = JSON.parseObject(web.getExpress(), WebRule.class);
 		this.webRuleFields = this.webRule.getWebRuleFields();
 	}
     
 	// 部分一：抓取网站的相关配置，包括编码、抓取间隔、重试次数等
 	private Site site = Site.me()
-			.setRetryTimes(webRule.getRetryTimes() != 0 ? webRule.getRetryTimes() : 3)
-			.setSleepTime(webRule.getSleepTime() != 0 ? webRule.getSleepTime() : 1000)
+			.setRetryTimes(3)
+			.setSleepTime(1000)
 			.setTimeOut(10000)
 			.setUserAgent("Mozilla/5.0 (Macintosh; Intel Mac OS X 10_7_2) AppleWebKit/537.31 (KHTML, like Gecko) Chrome/26.0.1410.65 Safari/537.31");
 	

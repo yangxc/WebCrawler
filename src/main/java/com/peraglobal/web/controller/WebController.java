@@ -129,7 +129,9 @@ public class WebController {
 		try {
 			webService.start(crawlerId);
 			return new ResponseEntity<>(HttpStatus.OK);
-		} catch (Exception e) {}
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
 		return new ResponseEntity<>(HttpStatus.EXPECTATION_FAILED);
 	}
 	

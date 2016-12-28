@@ -1,6 +1,5 @@
 package com.peraglobal.web.service;
 
-import org.json.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -9,6 +8,8 @@ import com.peraglobal.web.model.Web;
 
 import us.codecraft.webmagic.Spider;
 
+import com.alibaba.fastjson.JSON;
+import com.alibaba.fastjson.JSONObject;
 import com.peraglobal.spider.model.WebRule;
 import com.peraglobal.spider.process.SpiderManager;
 import com.peraglobal.spider.process.WebPipeline;
@@ -38,9 +39,7 @@ public class SpiderService {
 	 */
 	public void start(Web web) throws Exception {
 		
-		// 构建 Json 对象
-		JSONObject jsonObj = new JSONObject(web.getExpress());  
-		WebRule webRule = (WebRule)JSONObject.wrap(jsonObj);
+		WebRule webRule = JSON.parseObject(web.getExpress(), WebRule.class);
 		
 		// 创建数据库导入对象
 		Spider
