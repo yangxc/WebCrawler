@@ -28,7 +28,7 @@ public interface WebMapper {
 	 * @param groupId 组 ID
 	 * @return List<Crawler> 任务列表
 	 */
-	@Select("select * from Web where groupId = #{groupId}")
+	@Select("select * from web where groupId = #{groupId}")
     public List<Web> getWebList(String groupId);
    
 	/**
@@ -36,7 +36,7 @@ public interface WebMapper {
 	 * @param crawlerId  WEB 采集 ID
 	 * @return Web 任务
 	 */
-    @Select("select * from Web where crawlerId = #{crawlerId}")
+    @Select("select * from web where crawlerId = #{crawlerId}")
     public Web getWeb(String crawlerId);
    
 	/**
@@ -45,35 +45,35 @@ public interface WebMapper {
 	 * @param groupId 组 ID
 	 * @return Web  WEB 采集
 	 */
-    @Select("select * from Web where webName = #{webName} and groupId = #{groupId}")
+    @Select("select * from web where crawlerName = #{crawlerName} and groupId = #{groupId}")
     public Web getWebByWebName(Web web);
     
 	/**
 	 * 创建 WEB 采集
 	 * @param Web  WEB 采集对象
 	 */
-    @Insert("insert into Web (crawlerId, webName, groupId, groupName, express, state, createTime, updateTime) values (#{crawlerId}, #{webName}, #{groupId}, #{groupName}, #{express}, #{state}, #{createTime}, #{updateTime})")  
+    @Insert("insert into web (crawlerId, crawlerName, groupId, groupName, express, state, createTime, updateTime) values (#{crawlerId}, #{crawlerName}, #{groupId}, #{groupName}, #{express,javaType=string,jdbcType=BLOB}, #{state}, #{createTime}, #{updateTime})")  
     public void createWeb(Web web);
 
     /**
 	 * 移除 WEB 采集
 	 * @param crawlerId 任务 ID
 	 */
-    @Delete("delete from Web where crawlerId = #{crawlerId}")
+    @Delete("delete from web where crawlerId = #{crawlerId}")
 	public void removeWeb(String crawlerId);
 
 	/**
 	 * 编辑 WEB 采集
 	 * @param Web  WEB 采集对象
 	 */
-    @Update("update Web set webName = #{webName}, groupName = #{groupName}, express = #{express}, updateTime = #{updateTime} where crawlerId = #{crawlerId}")
+    @Update("update web set crawlerName = #{crawlerName}, groupName = #{groupName}, express = #{express}, updateTime = #{updateTime} where crawlerId = #{crawlerId}")
 	public void editWeb(Web web);
 
 	/**
 	 * 根据 WEB 采集 ID 修改状态
 	 * @param Web  WEB 采集对象
 	 */
-    @Update("update Web set state = #{state}, updateTime = #{updateTime} where crawlerId = #{crawlerId}")
+    @Update("update web set state = #{state}, updateTime = #{updateTime} where crawlerId = #{crawlerId}")
 	public int updateStateByWeb(Web web);
 
 }

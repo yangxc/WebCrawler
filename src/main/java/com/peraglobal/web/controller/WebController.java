@@ -12,6 +12,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.peraglobal.spider.model.WebCrawler;
 import com.peraglobal.web.model.Web;
 import com.peraglobal.web.service.WebService;
 
@@ -69,19 +70,21 @@ public class WebController {
 	
 	/**
 	 * 创建 Web 采集
-	 * @param crawler Web 采集对象
+	 * @param crawler webCrawler 采集对象
 	 * @return crawlerId 创建成功返回 Web 采集 ID
 	 * @since 1.0
 	 */
 	@SuppressWarnings("static-access")
 	@RequestMapping(value = "/createWeb", method = RequestMethod.POST, consumes = MediaType.APPLICATION_JSON_VALUE)
-	public ResponseEntity<String> createWeb(@RequestBody Web web) {
+	public ResponseEntity<String> createWeb(@RequestBody WebCrawler webCrawler) {
 		try {
-			String crawlerId = webService.createWeb(web);
+			String crawlerId = webService.createWeb(webCrawler);
 			if(crawlerId != null) {
 				return new ResponseEntity<>(HttpStatus.CREATED).accepted().body(crawlerId);
 			}
-		} catch (Exception e) {}
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
 		return new ResponseEntity<>(HttpStatus.EXPECTATION_FAILED);
 	}
 	

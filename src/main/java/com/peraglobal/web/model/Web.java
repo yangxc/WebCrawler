@@ -1,8 +1,11 @@
 package com.peraglobal.web.model;
 
+import java.io.Serializable;
 import java.util.Date;
 
-public class Web {
+public class Web implements Serializable {
+
+	private static final long serialVersionUID = 7269171837908367794L;
 
 	/**
 	 * @category 采集 ID

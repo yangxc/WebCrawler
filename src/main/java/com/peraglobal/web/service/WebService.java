@@ -3,9 +3,11 @@ package com.peraglobal.web.service;
 import java.util.Date;
 import java.util.List;
 
+import org.json.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import com.peraglobal.spider.model.WebCrawler;
 import com.peraglobal.web.mapper.WebMapper;
 import com.peraglobal.web.model.Web;
 import com.peraglobal.web.model.WebConst;
@@ -52,7 +54,12 @@ public class WebService {
 	 * @return crawlerId  WEB 采集 ID
 	 * @throws Exception
 	 */
-	public String createWeb(Web web) throws Exception {
+	public String createWeb(WebCrawler webCrawler) {
+		Web web = new Web();
+		web.setCrawlerName(webCrawler.getCrawlerName());
+		web.setGroupId(webCrawler.getGroupId());
+		web.setGroupName(webCrawler.getGroupName());
+		
 		// 根据当前 WEB 采集名称和组 ID 查询是否存在，则不创建
 		Web c = webMapper.getWebByWebName(web);
 		if(c == null) {
@@ -60,6 +67,10 @@ public class WebService {
 			web.setCrawlerId(java.util.UUID.randomUUID().toString());
 			// 默认状态为：就绪
 			web.setState(WebConst.STATE_READY);
+			
+			JSONObject jsonObj = new JSONObject(webCrawler.getWebRule());  
+			web.setExpress(jsonObj.toString());
+			
 			web.setCreateTime(new Date());
 			web.setUpdateTime(new Date());
 			webMapper.createWeb(web);
@@ -67,7 +78,7 @@ public class WebService {
 		}
 		return null;
 	}
-
+	
 	/**
 	 * 通过 WEB 采集 ID 删除对象
 	 * @param crawlerId  WEB 采集 ID
@@ -134,4 +145,6 @@ public class WebService {
 			webMapper.updateStateByWeb(t);
 		}
 	}
+
+	
 }
