@@ -66,7 +66,7 @@ public interface WebMapper {
 	 * 编辑 WEB 采集
 	 * @param Web  WEB 采集对象
 	 */
-    @Update("update web set crawlerName = #{crawlerName}, groupName = #{groupName}, express = #{express}, updateTime = #{updateTime} where crawlerId = #{crawlerId}")
+    @Update("update web set crawlerName = #{crawlerName}, groupName = #{groupName}, express = #{express,javaType=string,jdbcType=BLOB}, updateTime = #{updateTime} where crawlerId = #{crawlerId}")
 	public void editWeb(Web web);
 
 	/**
