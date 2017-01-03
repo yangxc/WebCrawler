@@ -4,12 +4,12 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import com.peraglobal.web.model.History;
+import com.peraglobal.web.model.Rule;
 import com.peraglobal.web.model.Web;
 
 import us.codecraft.webmagic.Spider;
 
 import com.alibaba.fastjson.JSON;
-import com.alibaba.fastjson.JSONObject;
 import com.peraglobal.spider.model.WebRule;
 import com.peraglobal.spider.process.SpiderManager;
 import com.peraglobal.spider.process.WebPipeline;
@@ -29,6 +29,9 @@ import com.peraglobal.spider.process.WebProcessor;
 public class SpiderService {
 
 	@Autowired
+   	private WebService webService;
+	
+	@Autowired
    	private HistoryService historyService;
 	
 	
@@ -39,11 +42,13 @@ public class SpiderService {
 	 */
 	public void start(Web web) throws Exception {
 		
-		WebRule webRule = JSON.parseObject(web.getExpress(), WebRule.class);
+		// 查询规则文件
+		Rule rule = webService.getRule(web.getCrawlerId());
+		WebRule webRule = JSON.parseObject(rule.getExpress(), WebRule.class);
 		
 		// 创建数据库导入对象
 		Spider
-			.create(new WebProcessor(web))
+			.create(new WebProcessor(web).setWebRule(webRule))
 			.addUrl(webRule.getUrl())
 			.addPipeline(new WebPipeline(web))
 			.setWeb(web)

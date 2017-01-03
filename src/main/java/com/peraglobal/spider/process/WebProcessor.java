@@ -2,8 +2,6 @@ package com.peraglobal.spider.process;
 
 import java.util.List;
 
-import com.alibaba.fastjson.JSON;
-import com.alibaba.fastjson.JSONObject;
 import com.peraglobal.spider.model.WebConst;
 import com.peraglobal.spider.model.WebRule;
 import com.peraglobal.spider.model.WebRuleField;
@@ -30,9 +28,13 @@ public class WebProcessor implements PageProcessor {
 	
 	public WebProcessor (Web web) {
 		this.web = web;
+	}
+	
+	public WebProcessor setWebRule (WebRule webRule) {
 		// 构建 Json 对象
-		this.webRule = JSON.parseObject(web.getExpress(), WebRule.class);
+		this.webRule = webRule;
 		this.webRuleFields = this.webRule.getWebRuleFields();
+		return this;
 	}
     
 	// 部分一：抓取网站的相关配置，包括编码、抓取间隔、重试次数等

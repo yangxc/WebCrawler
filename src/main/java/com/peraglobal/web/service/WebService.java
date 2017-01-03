@@ -7,8 +7,11 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import com.alibaba.fastjson.JSONObject;
+import com.peraglobal.common.IDGenerate;
 import com.peraglobal.spider.model.WebCrawler;
+import com.peraglobal.web.mapper.RuleMapper;
 import com.peraglobal.web.mapper.WebMapper;
+import com.peraglobal.web.model.Rule;
 import com.peraglobal.web.model.Web;
 import com.peraglobal.web.model.WebConst;
 
@@ -27,6 +30,9 @@ public class WebService {
 	
 	@Autowired
     private WebMapper webMapper;
+	
+	@Autowired
+    private RuleMapper ruleMapper;
 	
 	@Autowired
 	private SpiderService spiderService;
@@ -68,18 +74,23 @@ public class WebService {
 		if(c == null) {
 			// uuid 任务 ID
 			if (null == webCrawler.getCrawlerId()) {
-				web.setCrawlerId(java.util.UUID.randomUUID().toString());
+				web.setCrawlerId(IDGenerate.uuid());
 			} else {
 				web.setCrawlerId(webCrawler.getCrawlerId());
 			}
 			// 默认状态为：就绪
 			web.setState(WebConst.STATE_READY);
-			String str = JSONObject.toJSONString(webCrawler.getWebRule());
-			web.setExpress(str);
-			
 			web.setCreateTime(new Date());
 			web.setUpdateTime(new Date());
 			webMapper.createWeb(web);
+			
+			// 创建规则文件
+			String str = JSONObject.toJSONString(webCrawler.getWebRule());
+			Rule rule = new Rule();
+			rule.setRuleId(IDGenerate.uuid());
+			rule.setCrawlerId(web.getCrawlerId());
+			rule.setExpress(str);
+			ruleMapper.createRule(rule);
 			return web.getCrawlerId();
 		}
 		return null;
@@ -107,7 +118,12 @@ public class WebService {
 	 * @param WEB 采集对象
 	 * @throws Exception
 	 */
-	public void editWeb(Web web) throws Exception {
+	public void editWeb(WebCrawler webCrawler) throws Exception {
+		Web web = new Web();
+		web.setCrawlerId(webCrawler.getCrawlerId());
+		web.setCrawlerName(webCrawler.getCrawlerName());
+		web.setGroupId(webCrawler.getGroupId());
+		web.setGroupName(webCrawler.getGroupName());
 		// 查询 WEB 采集对象是否存在
 		Web c = webMapper.getWeb(web.getCrawlerId());
 		if(c != null) {
@@ -117,6 +133,13 @@ public class WebService {
 			}
 			web.setUpdateTime(new Date());
 			webMapper.editWeb(web);
+			
+			// 修改规则
+			String str = JSONObject.toJSONString(webCrawler.getWebRule());
+			Rule rule = new Rule();
+			rule.setCrawlerId(web.getCrawlerId());
+			rule.setExpress(str);
+			ruleMapper.editRule(rule);
 		}
 	}
 
@@ -151,6 +174,10 @@ public class WebService {
 			t.setUpdateTime(new Date());
 			webMapper.updateStateByWeb(t);
 		}
+	}
+
+	public Rule getRule(String crawlerId) {
+		return ruleMapper.getRule(crawlerId);
 	}
 
 	

@@ -110,9 +110,9 @@ public class WebController {
 	 * @since 1.0
 	 */
 	@RequestMapping(value = "/editWeb", method = RequestMethod.PUT, consumes = MediaType.APPLICATION_JSON_VALUE)
-	public ResponseEntity<?> editWeb(@RequestBody Web web) {
+	public ResponseEntity<?> editWeb(@RequestBody WebCrawler webCrawler) {
 		try {
-			webService.editWeb(web);
+			webService.editWeb(webCrawler);
 			return new ResponseEntity<>(HttpStatus.OK);
 		} catch (Exception e) {}
 		return new ResponseEntity<>(HttpStatus.EXPECTATION_FAILED);
