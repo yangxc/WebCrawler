@@ -52,7 +52,7 @@ public interface WebMapper {
 	 * 创建 WEB 采集
 	 * @param Web  WEB 采集对象
 	 */
-    @Insert("insert into web (crawlerId, crawlerName, groupId, groupName, express, state, createTime, updateTime) values (#{crawlerId}, #{crawlerName}, #{groupId}, #{groupName}, #{express,javaType=string,jdbcType=BLOB}, #{state}, #{createTime}, #{updateTime})")  
+    @Insert("insert into web (crawlerId, crawlerName, groupId, groupName, state, createTime, updateTime) values (#{crawlerId}, #{crawlerName}, #{groupId}, #{groupName}, #{state}, #{createTime}, #{updateTime})")  
     public void createWeb(Web web);
 
     /**
@@ -66,7 +66,7 @@ public interface WebMapper {
 	 * 编辑 WEB 采集
 	 * @param Web  WEB 采集对象
 	 */
-    @Update("update web set crawlerName = #{crawlerName}, groupName = #{groupName}, express = #{express,javaType=string,jdbcType=BLOB}, updateTime = #{updateTime} where crawlerId = #{crawlerId}")
+    @Update("update web set crawlerName = #{crawlerName}, groupName = #{groupName}, updateTime = #{updateTime} where crawlerId = #{crawlerId}")
 	public void editWeb(Web web);
 
 	/**
