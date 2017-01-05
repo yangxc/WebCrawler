@@ -167,8 +167,8 @@ public class WebController {
 	 * @since 1.0
 	 */
 	@SuppressWarnings("static-access")
-	@RequestMapping(value = "/getHistoryByTaskId/{crawlerId}", method = RequestMethod.GET)
-	public ResponseEntity<List<History>> getHistoryByTaskId(@PathVariable("crawlerId") String crawlerId) {
+	@RequestMapping(value = "/getHistoryByCrawlerId/{crawlerId}", method = RequestMethod.GET)
+	public ResponseEntity<List<History>> getHistoryByCrawlerId(@PathVariable("crawlerId") String crawlerId) {
 		try {
 			List<History> historys = historyService.getHistorysByCrawlerId(crawlerId);
 			return new ResponseEntity<>(HttpStatus.OK).accepted().body(historys);
