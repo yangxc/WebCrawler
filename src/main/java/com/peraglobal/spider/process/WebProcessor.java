@@ -59,8 +59,10 @@ public class WebProcessor implements PageProcessor {
 		}else if (page.getHtml().xpath(webRule.getDetailUrl()).match()){
 			page.addTargetRequests(page.getHtml().xpath(webRule.getDetailUrl()).links().all());
 		}else{
-			for (WebRuleField field : webRuleFields) {
-				page.putField(field.getFieldKey(), page.getHtml().xpath(field.getFieldText()).toString());
+			if(webRuleFields != null) {
+				for (WebRuleField field : webRuleFields) {
+					page.putField(field.getFieldKey(), page.getHtml().xpath(field.getFieldText()).toString());
+				}
 			}
 		}
 	}
