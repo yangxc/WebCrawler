@@ -3,10 +3,12 @@ package us.codecraft.webmagic;
 import org.apache.commons.collections.CollectionUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
 
 import com.peraglobal.spider.process.SdcSpider;
 import com.peraglobal.spider.process.SpiderManager;
 import com.peraglobal.web.model.Web;
+import com.peraglobal.web.service.HistoryService;
 
 import us.codecraft.webmagic.downloader.Downloader;
 import us.codecraft.webmagic.downloader.HttpClientDownloader;
@@ -63,6 +65,9 @@ import java.util.concurrent.locks.ReentrantLock;
  * @since 0.1.0
  */
 public class Spider extends SdcSpider implements Task {
+	
+	
+	@Autowired private HistoryService historyService; // 历史记录
 	
 	protected Web web; // web 采集功能
 
@@ -308,6 +313,14 @@ public class Spider extends SdcSpider implements Task {
 
     @Override
     public void run() {
+    	/**
+         * 扩展方法 任务停止操作结束
+         */
+    	if (spiderMonitor()) {
+			historyService.stopHistory(web.getCrawlerId());
+			return;
+		}
+    	
         checkRunningStat();
         initComponent();
         logger.info("Spider " + getUUID() + " started!");
@@ -340,8 +353,9 @@ public class Spider extends SdcSpider implements Task {
         }
         stat.set(STAT_STOPPED);
         /**
-         * 扩展方法 任务结束，后续完善
+         * 扩展方法 任务停止
          */
+        historyService.stopHistory(web.getCrawlerId());
         
         // release some resources
         if (destroyWhenExit) {

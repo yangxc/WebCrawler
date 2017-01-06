@@ -4,6 +4,7 @@ import java.util.Map.Entry;
 
 import org.springframework.beans.factory.annotation.Autowired;
 
+import com.alibaba.fastjson.JSONObject;
 import com.peraglobal.common.CurrentApplicationContext;
 import com.peraglobal.common.IDGenerate;
 import com.peraglobal.web.model.Metadata;
@@ -36,30 +37,31 @@ public class WebPipeline implements Pipeline{
 
 	@Override
 	public void process(ResultItems resultItems, Task task) {
+		
 		System.out.println("get page: " + resultItems.getRequest().getUrl());
-        for (Entry<String, Object> entry : resultItems.getAll().entrySet()) {
-        	try {
-	        	System.out.println(entry.getKey() + ":\t" + entry.getValue());
-	        	// 生成 MD5 码
-				String md5 = IDGenerate.EncoderByMd5(entry.getKey() + ":\t" + entry.getValue());
-				// 判断数据是否存在
-				Metadata metadata = metadataService.getMetadataByMd(md5);
-				if (metadata == null) {
-					
-					// 持久化元数据
-					metadata = new Metadata();
-					metadata.setCrawlerId(web.getCrawlerId());
-					metadata.setMd(md5);
-					metadata.setMetadata(entry.getKey() + ":\t" + entry.getValue());
-					metadataService.createMetadata(metadata);
-					
-					// 监控日志，后续完善
-					historyService.updatePageCount(web.getCrawlerId());
-				}
-        	} catch (Exception e) {
-				e.printStackTrace();
-				historyService.updateExcetion(web.getCrawlerId(), e.getMessage());
-			}
+		
+		// 采集到数据转换为 Json 格式
+		String jsonData = JSONObject.toJSONString(resultItems.getAll().entrySet());
+    	// 生成 MD5 码
+		String md5 = IDGenerate.EncoderByMd5(jsonData);
+			
+		// 持久化元数据
+		Metadata metadata = new Metadata();
+		metadata.setCrawlerId(web.getCrawlerId());
+		metadata.setMd(md5);
+		metadata.setMetadata(jsonData);
+		try {
+			metadataService.createMetadata(metadata);
+			// 监控日志
+			historyService.updatePageCount(web.getCrawlerId());
+		} catch (Exception e1) {
+			historyService.updateExcetion(web.getCrawlerId(), e1.getMessage());
+			e1.printStackTrace();
+		}
+		
+		// 输出打印采集数据，开发是查看数据
+		for (Entry<String, Object> entry : resultItems.getAll().entrySet()) {
+        	System.out.println(entry.getKey() + ":\t" + entry.getValue());
         }
 	}
 

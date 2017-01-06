@@ -2,7 +2,6 @@ package com.peraglobal.spider.process;
 
 import java.util.List;
 
-import com.peraglobal.spider.model.WebConst;
 import com.peraglobal.spider.model.WebRule;
 import com.peraglobal.spider.model.WebRuleField;
 import com.peraglobal.web.model.Web;
@@ -49,7 +48,7 @@ public class WebProcessor implements PageProcessor {
 		return site;
 	}
 	
-	/*
+	
     @Override
     public void process(Page page) {
         page.addTargetRequests(page.getHtml().links().regex("(https://github\\.com/[\\w\\-]+/[\\w\\-]+)").all());
@@ -58,12 +57,12 @@ public class WebProcessor implements PageProcessor {
         page.putField("name", page.getHtml().xpath("//h1[@class='entry-title public']/strong/a/text()").toString());
         if (page.getResultItems().get("name")==null){
             //skip this page
-            page.setSkip(true);
+            //page.setSkip(true);
         }
         page.putField("readme", page.getHtml().xpath("//div[@id='readme']/tidyText()"));
     }
-    */
-	
+    
+    /*
 	// process是定制爬虫逻辑的核心接口，在这里编写抽取逻辑
 	@Override
 	public void process(Page page) {
@@ -101,4 +100,5 @@ public class WebProcessor implements PageProcessor {
 			}
 		}
 	}
+	*/
 }
