@@ -338,6 +338,15 @@ public class Spider extends SdcSpider implements Task {
                     @Override
                     public void run() {
                         try {
+                        	/**
+                             * 扩展方法 任务停止操作结束
+                             */
+                        	if (spiderMonitor()) {
+                    			historyService.stopHistory(web.getCrawlerId());
+                    			 stat.set(STAT_STOPPED);
+                    			return;
+                    		}
+                        	
                             processRequest(requestFinal);
                             onSuccess(requestFinal);
                         } catch (Exception e) {

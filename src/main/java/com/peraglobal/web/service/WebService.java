@@ -173,6 +173,7 @@ public class WebService {
 			t.setState(WebConst.STATE_STOP);
 			t.setUpdateTime(new Date());
 			webMapper.updateStateByWeb(t);
+			spiderService.stop(t);
 		}
 	}
 

@@ -53,18 +53,32 @@ public class WebProcessor implements PageProcessor {
 	// process是定制爬虫逻辑的核心接口，在这里编写抽取逻辑
 	@Override
 	public void process(Page page) {
-		
-		if(page.getHtml().xpath(webRule.getListUrl()).match()){
-			page.addTargetRequests(page.getHtml().xpath(webRule.getListUrl()).links().all());
-		}else if (page.getHtml().xpath(webRule.getDetailUrl()).match()){
-			page.addTargetRequests(page.getHtml().xpath(webRule.getDetailUrl()).links().all());
+		if(webRule.getListUrlType().equals(WebConst.XPATH)) {
+			if(page.getHtml().xpath(webRule.getListUrl()).match()){
+				page.addTargetRequests(page.getHtml().xpath(webRule.getListUrl()).links().all());
+			} else if (null != webRule.getDetailUrl() && !"".equals(webRule.getDetailUrl())
+					&& page.getHtml().xpath(webRule.getDetailUrl()).match()) {
+				page.addTargetRequests(page.getHtml().xpath(webRule.getDetailUrl()).links().all());
+			}else{
+				if(webRuleFields != null) {
+					for (WebRuleField field : webRuleFields) {
+						page.putField(field.getFieldKey(), page.getHtml().xpath(field.getFieldText()).toString());
+					}
+				}
+			}
 		}else{
-			if(webRuleFields != null) {
-				for (WebRuleField field : webRuleFields) {
-					page.putField(field.getFieldKey(), page.getHtml().xpath(field.getFieldText()).toString());
+			if(page.getHtml().regex(webRule.getListUrl()).match()){
+				page.addTargetRequests(page.getHtml().regex(webRule.getListUrl()).links().all());
+			} else if (null != webRule.getDetailUrl() && !"".equals(webRule.getDetailUrl())
+					&& page.getHtml().regex(webRule.getDetailUrl()).match()) {
+				page.addTargetRequests(page.getHtml().regex(webRule.getDetailUrl()).links().all());
+			}else{
+				if(webRuleFields != null) {
+					for (WebRuleField field : webRuleFields) {
+						page.putField(field.getFieldKey(), page.getHtml().xpath(field.getFieldText()).toString());
+					}
 				}
 			}
 		}
 	}
-	
 }
