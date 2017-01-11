@@ -28,7 +28,7 @@ public interface WebMapper {
 	 * @param groupId 组 ID
 	 * @return List<Crawler> 任务列表
 	 */
-	@Select("select * from web where groupId = #{groupId}")
+	@Select("select * from web where groupId = #{groupId} order by createTime desc")
     public List<Web> getWebList(String groupId);
    
 	/**

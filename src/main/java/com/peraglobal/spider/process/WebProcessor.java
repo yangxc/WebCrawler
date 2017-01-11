@@ -53,30 +53,45 @@ public class WebProcessor implements PageProcessor {
 	// process是定制爬虫逻辑的核心接口，在这里编写抽取逻辑
 	@Override
 	public void process(Page page) {
-		if(webRule.getListUrlType().equals(WebConst.XPATH)) {
+		String list_type = webRule.getListUrlType(); // 列表规则类型
+		String detail_type = webRule.getDetailUrlType(); // 详情规则类型
+		
+		boolean list = false; // 是否是解析 list 页面
+		boolean detail = false; // 是否解析 详情 list 页面
+		
+		// 列表规则处理，如果是每一页列表页面处理
+		if (list_type.equals(WebConst.XPATH)) {
 			if(page.getHtml().xpath(webRule.getListUrl()).match()){
 				page.addTargetRequests(page.getHtml().xpath(webRule.getListUrl()).links().all());
-			} else if (null != webRule.getDetailUrl() && !"".equals(webRule.getDetailUrl())
-					&& page.getHtml().xpath(webRule.getDetailUrl()).match()) {
-				page.addTargetRequests(page.getHtml().xpath(webRule.getDetailUrl()).links().all());
-			}else{
-				if(webRuleFields != null) {
-					for (WebRuleField field : webRuleFields) {
-						page.putField(field.getFieldKey(), page.getHtml().xpath(field.getFieldText()).toString());
-					}
-				}
+				list = true;
 			}
-		}else{
+		}else {
 			if(page.getHtml().regex(webRule.getListUrl()).match()){
 				page.addTargetRequests(page.getHtml().regex(webRule.getListUrl()).links().all());
-			} else if (null != webRule.getDetailUrl() && !"".equals(webRule.getDetailUrl())
-					&& page.getHtml().regex(webRule.getDetailUrl()).match()) {
-				page.addTargetRequests(page.getHtml().regex(webRule.getDetailUrl()).links().all());
-			}else{
-				if(webRuleFields != null) {
-					for (WebRuleField field : webRuleFields) {
-						page.putField(field.getFieldKey(), page.getHtml().xpath(field.getFieldText()).toString());
-					}
+				list = true;
+			}
+		}
+		
+		// 详情规则处理，如果是一个页面获得详情地址处理
+		if (!list) {
+			if (detail_type.equals(WebConst.XPATH)) {
+				if(page.getHtml().xpath(webRule.getDetailUrl()).match()){
+					page.addTargetRequests(page.getHtml().xpath(webRule.getDetailUrl()).links().all());
+					detail = true;
+				}
+			}else {
+				if(page.getHtml().regex(webRule.getDetailUrl()).match()){
+					page.addTargetRequests(page.getHtml().regex(webRule.getDetailUrl()).links().all());
+					detail = true;
+				}
+			}
+		}
+		
+		// 属性规则处理，如果具体的页面属性处理
+		if (!list && !detail) {
+			if(webRuleFields != null) {
+				for (WebRuleField field : webRuleFields) {
+					page.putField(field.getFieldKey(), page.getHtml().xpath(field.getFieldText()).toString());
 				}
 			}
 		}
