@@ -34,30 +34,7 @@ import java.util.concurrent.locks.Condition;
 import java.util.concurrent.locks.ReentrantLock;
 
 /**
- * Entrance of a crawler.<br>
- * A spider contains four modules: Downloader, Scheduler, PageProcessor and
- * Pipeline.<br>
- * Every module is a field of Spider. <br>
- * The modules are defined in interface. <br>
- * You can customize a spider with various implementations of them. <br>
- * Examples: <br>
- * <br>
- * A simple crawler: <br>
- * Spider.create(new SimplePageProcessor("http://my.oschina.net/",
- * "http://my.oschina.net/*blog/*")).run();<br>
- * <br>
- * Store results to files by FilePipeline: <br>
- * Spider.create(new SimplePageProcessor("http://my.oschina.net/",
- * "http://my.oschina.net/*blog/*")) <br>
- * .pipeline(new FilePipeline("/data/temp/webmagic/")).run(); <br>
- * <br>
- * Use FileCacheQueueScheduler to store urls and cursor in files, so that a
- * Spider can resume the status when shutdown. <br>
- * Spider.create(new SimplePageProcessor("http://my.oschina.net/",
- * "http://my.oschina.net/*blog/*")) <br>
- * .scheduler(new FileCacheQueueScheduler("/data/temp/webmagic/cache/")).run(); <br>
- *
- * @author code4crafter@gmail.com <br>
+ * @author yongqian.liu
  * @see Downloader
  * @see Scheduler
  * @see PageProcessor
@@ -184,18 +161,6 @@ public class Spider extends SdcSpider implements Task {
      *
      * @param scheduler scheduler
      * @return this
-     * @see #setScheduler(us.codecraft.webmagic.scheduler.Scheduler)
-     */
-    @Deprecated
-    public Spider scheduler(Scheduler scheduler) {
-        return setScheduler(scheduler);
-    }
-
-    /**
-     * set scheduler for Spider
-     *
-     * @param scheduler scheduler
-     * @return this
      * @see Scheduler
      * @since 0.2.1
      */
@@ -210,18 +175,6 @@ public class Spider extends SdcSpider implements Task {
             }
         }
         return this;
-    }
-
-    /**
-     * add a pipeline for Spider
-     *
-     * @param pipeline pipeline
-     * @return this
-     * @see #addPipeline(us.codecraft.webmagic.pipeline.Pipeline)
-     * @deprecated
-     */
-    public Spider pipeline(Pipeline pipeline) {
-        return addPipeline(pipeline);
     }
 
     /**
@@ -260,18 +213,6 @@ public class Spider extends SdcSpider implements Task {
     public Spider clearPipeline() {
         pipelines = new ArrayList<Pipeline>();
         return this;
-    }
-
-    /**
-     * set the downloader of spider
-     *
-     * @param downloader downloader
-     * @return this
-     * @see #setDownloader(us.codecraft.webmagic.downloader.Downloader)
-     * @deprecated
-     */
-    public Spider downloader(Downloader downloader) {
-        return setDownloader(downloader);
     }
 
     /**

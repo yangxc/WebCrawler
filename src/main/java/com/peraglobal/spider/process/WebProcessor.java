@@ -8,7 +8,9 @@ import com.peraglobal.spider.model.WebRuleField;
 import com.peraglobal.web.model.Web;
 
 import us.codecraft.webmagic.Page;
+import us.codecraft.webmagic.Request;
 import us.codecraft.webmagic.Site;
+import us.codecraft.webmagic.downloader.WebDownloader;
 import us.codecraft.webmagic.processor.PageProcessor;
 
 /**
@@ -53,27 +55,32 @@ public class WebProcessor implements PageProcessor {
 	// process是定制爬虫逻辑的核心接口，在这里编写抽取逻辑
 	@Override
 	public void process(Page page) {
+		String list_url = webRule.getListUrl(); // 列表url
 		String list_type = webRule.getListUrlType(); // 列表规则类型
+		String detail_url = webRule.getDetailUrl(); // 详情url
 		String detail_type = webRule.getDetailUrlType(); // 详情规则类型
 		
 		boolean list = false; // 是否是解析 list 页面
 		boolean detail = false; // 是否解析 详情 list 页面
 		
 		// 列表规则处理，如果是每一页列表页面处理
-		if (list_type.equals(WebConst.XPATH)) {
-			if(page.getHtml().xpath(webRule.getListUrl()).match()){
-				page.addTargetRequests(page.getHtml().xpath(webRule.getListUrl()).links().all());
-				list = true;
-			}
-		}else {
-			if(page.getHtml().regex(webRule.getListUrl()).match()){
-				page.addTargetRequests(page.getHtml().regex(webRule.getListUrl()).links().all());
-				list = true;
+		if (list_url != null && !"".equals(list_url)) {
+			if (list_type.equals(WebConst.XPATH)) {
+				if(page.getHtml().xpath(webRule.getListUrl()).match()){
+					page.addTargetRequests(page.getHtml().xpath(webRule.getListUrl()).links().all());
+					list = true;
+				}
+			}else {
+				if(page.getHtml().regex(webRule.getListUrl()).match()){
+					page.addTargetRequests(page.getHtml().regex(webRule.getListUrl()).links().all());
+					list = true;
+				}
 			}
 		}
 		
 		// 详情规则处理，如果是一个页面获得详情地址处理
-		if (!list) {
+		if (detail_url != null && !"".equals(detail_url) &&
+				!list) {
 			if (detail_type.equals(WebConst.XPATH)) {
 				if(page.getHtml().xpath(webRule.getDetailUrl()).match()){
 					page.addTargetRequests(page.getHtml().xpath(webRule.getDetailUrl()).links().all());
@@ -91,7 +98,19 @@ public class WebProcessor implements PageProcessor {
 		if (!list && !detail) {
 			if(webRuleFields != null) {
 				for (WebRuleField field : webRuleFields) {
-					page.putField(field.getFieldKey(), page.getHtml().xpath(field.getFieldText()).toString());
+					String context = page.getHtml().xpath(field.getFieldText()).toString();
+					if (context.indexOf("href") != -1) {
+						// 附件下载功能
+						System.out.println(page.getHtml().xpath(field.getFieldText()).links());
+						Request request = new Request();
+						request.setUrl(page.getHtml().xpath(field.getFieldText()).links().toString());
+						Page pageDown = new WebDownloader().downloads(request, site);
+						byte[] cent = pageDown.getContentBytes();
+						// 后续开发
+					}else {
+						// 普通属性功能
+						page.putField(field.getFieldKey(), context);
+					}
 				}
 			}
 		}

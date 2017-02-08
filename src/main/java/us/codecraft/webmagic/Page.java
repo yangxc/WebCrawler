@@ -10,23 +10,17 @@ import java.util.ArrayList;
 import java.util.List;
 
 /**
- * Object storing extracted result and urls to fetch.<br>
- * Not thread safe.<br>
- * Main method：                                               <br>
- * {@link #getUrl()} get url of current page                   <br>
- * {@link #getHtml()}  get content of current page                 <br>
- * {@link #putField(String, Object)}  save extracted result            <br>
- * {@link #getResultItems()} get extract results to be used in {@link us.codecraft.webmagic.pipeline.Pipeline}<br>
- * {@link #addTargetRequests(java.util.List)} {@link #addTargetRequest(String)} add urls to fetch                 <br>
- *
- * @author code4crafter@gmail.com <br>
+ * 扩展开发
+ * @author yongqian.liu
  * @see us.codecraft.webmagic.downloader.Downloader
  * @see us.codecraft.webmagic.processor.PageProcessor
  * @since 0.1.0
  */
 public class Page {
+	
+	private byte[] contentBytes; // 附件内容
 
-    private Request request;
+	private Request request;
 
     private ResultItems resultItems = new ResultItems();
 
@@ -86,15 +80,6 @@ public class Page {
             json = new Json(rawText);
         }
         return json;
-    }
-
-    /**
-     * @param html html
-     * @deprecated since 0.4.0
-     * The html is parse just when first time of calling {@link #getHtml()}, so use {@link #setRawText(String)} instead.
-     */
-    public void setHtml(Html html) {
-        this.html = html;
     }
 
     public List<Request> getTargetRequests() {
@@ -218,6 +203,24 @@ public class Page {
         return this;
     }
 
+    /**
+     * 扩展方法，附件内容
+     * @return
+     */
+    public byte[] getContentBytes() {
+		return contentBytes;
+	}
+
+    /**
+     * 扩展方法，附件内容
+     * @param contentBytes
+     * @return
+     */
+	public Page setContentBytes(byte[] contentBytes) {
+		this.contentBytes = contentBytes;
+		return this;
+	}
+	
     @Override
     public String toString() {
         return "Page{" +
