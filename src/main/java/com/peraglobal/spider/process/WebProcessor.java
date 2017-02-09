@@ -107,6 +107,7 @@ public class WebProcessor implements PageProcessor {
 						Page pageDown = new WebDownloader().downloads(request, site);
 						byte[] cent = pageDown.getContentBytes();
 						// 后续开发
+						// 保存附件
 					}else {
 						// 普通属性功能
 						page.putField(field.getFieldKey(), context);
