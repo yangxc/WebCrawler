@@ -19,7 +19,11 @@ import java.util.List;
 public class Page {
 	
 	private byte[] contentBytes; // 附件内容
-
+	
+	private String fileName; // 附件名称
+	
+	private String fileType; // 附件的类型
+	
 	private Request request;
 
     private ResultItems resultItems = new ResultItems();
@@ -218,6 +222,42 @@ public class Page {
      */
 	public Page setContentBytes(byte[] contentBytes) {
 		this.contentBytes = contentBytes;
+		return this;
+	}
+	
+	/**
+     * 扩展方法，附件名称
+     * @return
+     */
+	public String getFileName() {
+		return fileName;
+	}
+
+    /**
+     * 扩展方法，附件名称
+     * @param fileName
+     * @return
+     */
+	public Page setFileName(String fileName) {
+		this.fileName = fileName;
+		return this;
+	}
+	
+	/**
+     * 扩展方法，附件类型
+     * @return
+     */
+	public String getFileType() {
+		return fileType;
+	}
+
+	/**
+     * 扩展方法，附件类型
+     * @param fileType
+     * @return
+     */
+	public Page setFileType(String fileType) {
+		this.fileType = fileType;
 		return this;
 	}
 	

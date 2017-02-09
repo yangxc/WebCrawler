@@ -12,7 +12,6 @@ import us.codecraft.webmagic.Spider;
 import com.alibaba.fastjson.JSON;
 import com.peraglobal.spider.model.WebRule;
 import com.peraglobal.spider.process.SpiderManager;
-import com.peraglobal.spider.process.WebPipeline;
 import com.peraglobal.spider.process.WebProcessor;
 
 /**
@@ -50,7 +49,6 @@ public class SpiderService {
 		Spider
 			.create(new WebProcessor(web).setWebRule(webRule))
 			.addUrl(webRule.getUrl())
-			.addPipeline(new WebPipeline(web))
 			.setWeb(web)
 			.register();
 		// 开始爬虫操作

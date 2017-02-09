@@ -2,6 +2,7 @@ package us.codecraft.webmagic.downloader;
 
 import org.apache.commons.io.IOUtils;
 import org.apache.commons.lang3.StringUtils;
+import org.apache.http.Header;
 import org.apache.http.HttpHost;
 import org.apache.http.HttpResponse;
 import org.apache.http.NameValuePair;
@@ -250,10 +251,31 @@ public class WebDownloader extends AbstractDownloader {
     protected Page handleResponse(Request request, String charset, HttpResponse httpResponse) throws IOException {
     	byte[] contentBytes = getContent(charset, httpResponse);
         Page page = new Page();
+        /**
+         * 扩展方法，设置附件内容
+         */
         page.setContentBytes(contentBytes);
         page.setUrl(new PlainText(request.getUrl()));
         page.setRequest(request);
         page.setStatusCode(httpResponse.getStatusLine().getStatusCode());
+        
+        /**
+         * 扩展方法，设置附件名称
+         */
+        Header[] h = httpResponse.getAllHeaders();
+        for (Header header : h) {
+        	if (header.getName() != null) {
+        		// 设置附件的名称
+        		if (header.getName().equals("Content-Disposition")) {
+        			page.setFileName(header.getValue());
+        		}
+        		// 设置附件的类型
+            	if (header.getName().equals("Content-Type")) {
+        			page.setFileType(header.getValue());
+        		}
+        	}
+        	
+		}
         return page;
     }
 
