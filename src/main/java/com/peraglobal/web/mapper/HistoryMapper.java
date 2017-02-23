@@ -49,7 +49,7 @@ public interface HistoryMapper {
     
     /**
 	 * 创建历史记录
-	 * @param metadata 历史记录对象
+	 * @param History 历史记录对象
 	 */
     @Insert("insert into history (id, crawlerId, version, pageCrawledCount, hasException, exceptionMessage, startDate, StopDate, createTime, updateTime) values (#{id}, #{crawlerId}, #{version}, #{pageCrawledCount}, #{hasException}, #{exceptionMessage}, #{startDate}, #{startDate}, #{createTime}, #{updateTime})")  
     public void createHistory(History history);

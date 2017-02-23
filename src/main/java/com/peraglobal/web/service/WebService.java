@@ -9,8 +9,10 @@ import org.springframework.stereotype.Service;
 import com.alibaba.fastjson.JSONObject;
 import com.peraglobal.common.IDGenerate;
 import com.peraglobal.spider.model.WebCrawler;
+import com.peraglobal.web.mapper.ProxyMapper;
 import com.peraglobal.web.mapper.RuleMapper;
 import com.peraglobal.web.mapper.WebMapper;
+import com.peraglobal.web.model.Proxy;
 import com.peraglobal.web.model.Rule;
 import com.peraglobal.web.model.Web;
 import com.peraglobal.web.model.WebConst;
@@ -33,6 +35,9 @@ public class WebService {
 	
 	@Autowired
     private RuleMapper ruleMapper;
+	
+	@Autowired
+	private ProxyMapper proxyMapper;
 	
 	@Autowired
 	private SpiderService spiderService;
@@ -91,6 +96,17 @@ public class WebService {
 			rule.setCrawlerId(web.getCrawlerId());
 			rule.setExpress(str);
 			ruleMapper.createRule(rule);
+			
+			// 创建代理
+			Proxy proxy = webCrawler.getProxy();
+			if (proxy != null) {
+				proxy.setProxyId(IDGenerate.uuid());
+				proxy.setCrawlerId(web.getCrawlerId());
+				proxy.setCreateTime(new Date());
+				proxy.setUpdateTime(new Date());
+				proxyMapper.createProxy(proxy);
+			}
+			
 			return web.getCrawlerId();
 		}
 		return null;

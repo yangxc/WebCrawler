@@ -4,6 +4,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import com.peraglobal.web.model.History;
+import com.peraglobal.web.model.Proxy;
 import com.peraglobal.web.model.Rule;
 import com.peraglobal.web.model.Web;
 
@@ -31,6 +32,9 @@ public class SpiderService {
    	private WebService webService;
 	
 	@Autowired
+   	private ProxyService proxyService;
+	
+	@Autowired
    	private HistoryService historyService;
 	
 	
@@ -45,9 +49,11 @@ public class SpiderService {
 		Rule rule = webService.getRule(web.getCrawlerId());
 		WebRule webRule = JSON.parseObject(rule.getExpress(), WebRule.class);
 		
+		// 查询代理
+		Proxy proxy = proxyService.getProxyByCrawlerId(web.getCrawlerId());
 		// 创建数据库导入对象
 		Spider
-			.create(new WebProcessor(web).setWebRule(webRule))
+			.create(new WebProcessor(web).setWebRule(webRule).setProxy(proxy))
 			.addUrl(webRule.getUrl())
 			.setWeb(web)
 			.register();

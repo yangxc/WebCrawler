@@ -47,3 +47,15 @@ CREATE TABLE `history` (
   updateTime	datetime NULL COMMENT '更新时间',
 PRIMARY KEY (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COMMENT='历史记录表';
+
+-- 代理表
+DROP TABLE IF EXISTS `proxy`;
+CREATE TABLE `proxy` (
+  proxyId  VARCHAR(50) NOT NULL COMMENT '主键',  
+  crawlerId  VARCHAR(50) NULL COMMENT '爬虫 ID',
+  hostName      VARCHAR(2000) NULL COMMENT '代理服务地址',
+  port      int COMMENT '端口',
+  createTime	datetime NULL COMMENT '创建时间',
+  updateTime	datetime NULL COMMENT '更新时间',
+PRIMARY KEY (`proxyId`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COMMENT='代理表';

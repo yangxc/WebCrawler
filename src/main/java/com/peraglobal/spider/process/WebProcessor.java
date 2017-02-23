@@ -2,6 +2,7 @@ package com.peraglobal.spider.process;
 
 import java.util.List;
 
+import org.apache.http.HttpHost;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import com.alibaba.fastjson.JSONObject;
@@ -13,6 +14,7 @@ import com.peraglobal.spider.model.WebConst;
 import com.peraglobal.spider.model.WebRule;
 import com.peraglobal.spider.model.WebRuleField;
 import com.peraglobal.web.model.Metadata;
+import com.peraglobal.web.model.Proxy;
 import com.peraglobal.web.model.Web;
 import com.peraglobal.web.service.HistoryService;
 import com.peraglobal.web.service.MetadataService;
@@ -31,6 +33,7 @@ import us.codecraft.webmagic.processor.PageProcessor;
 public class WebProcessor implements PageProcessor {
 
 	Web web;
+	Proxy proxy;
 	WebRule webRule;
 	List<WebRuleField> webRuleFields;
 	
@@ -54,6 +57,11 @@ public class WebProcessor implements PageProcessor {
 		this.attachmentRepository = (AttachmentRepository) CurrentApplicationContext.getBean("attachmentRepository");
 	}
 	
+	public WebProcessor setProxy (Proxy proxy) {
+		this.proxy = proxy;
+		return this;
+	}
+	
 	public WebProcessor setWebRule (WebRule webRule) {
 		// 构建 Json 对象
 		this.webRule = webRule;
@@ -66,6 +74,7 @@ public class WebProcessor implements PageProcessor {
 			.setRetryTimes(3)
 			.setSleepTime(1000)
 			.setTimeOut(10000)
+			.setHttpProxy(proxy ==null ? null : new HttpHost(proxy.getHostName(), proxy.getPort()))
 			.setUserAgent("Mozilla/5.0 (Macintosh; Intel Mac OS X 10_7_2) AppleWebKit/537.31 (KHTML, like Gecko) Chrome/26.0.1410.65 Safari/537.31");
 	
 	@Override
@@ -101,8 +110,7 @@ public class WebProcessor implements PageProcessor {
 		}
 		
 		// 详情规则处理，如果是一个页面获得详情地址处理
-		if (detail_url != null && !"".equals(detail_url) &&
-				!list) {
+		if (detail_url != null && !"".equals(detail_url)) {
 			if (detail_type.equals(WebConst.XPATH)) {
 				if(page.getHtml().xpath(webRule.getDetailUrl()).match()){
 					page.addTargetRequests(page.getHtml().xpath(webRule.getDetailUrl()).links().all());
@@ -124,33 +132,37 @@ public class WebProcessor implements PageProcessor {
 				// 附件对象
 				Attachment attachment = null;
 				for (WebRuleField field : webRuleFields) {
-					String text = page.getHtml().xpath(field.getFieldText()).toString();
+					System.out.println(page.getHtml().css(".sum").get());
 					
-					// 附件下载功能
-					if (text.indexOf("href") != -1) {
-						try {
-							Request request = new Request();
-							request.setUrl(page.getHtml().xpath(field.getFieldText()).links().toString());
-							Page pageDown = new WebDownloader().downloads(request, site);
-							byte[] contexts = pageDown.getContentBytes();
-							if (contexts != null) {
-								attachment = new Attachment();
-								
-								// 附件内容
-								attachment.setContext(contexts);
-								// 附件地址
-								attachment.setFilePath(pageDown.getUrl().toString());
-								// 附件名称
-								attachment.setFileName(pageDown.getFileName());
-								// 附件类型
-								attachment.setFileType(pageDown.getFileType());
+					
+					String text = page.getHtml().xpath(field.getFieldText()).toString();
+					if (text != null) {
+						// 附件下载功能
+						if (text.indexOf("href") != -1) {
+							try {
+								Request request = new Request();
+								request.setUrl(page.getHtml().xpath(field.getFieldText()).links().toString());
+								Page pageDown = new WebDownloader().downloads(request, site);
+								byte[] contexts = pageDown.getContentBytes();
+								if (contexts != null) {
+									attachment = new Attachment();
+									
+									// 附件内容
+									attachment.setContext(contexts);
+									// 附件地址
+									attachment.setFilePath(pageDown.getUrl().toString());
+									// 附件名称
+									attachment.setFileName(pageDown.getFileName());
+									// 附件类型
+									attachment.setFileType(pageDown.getFileType());
+								}
+							} catch (Exception e) {
 							}
-						} catch (Exception e) {
+						}else {
+							// 普通属性功能
+							page.putField(field.getFieldKey(), text);
+							sbData.append(field.getFieldKey()).append(":\t").append(text).append("\t\r");
 						}
-					}else {
-						// 普通属性功能
-						page.putField(field.getFieldKey(), text);
-						sbData.append(field.getFieldKey()).append(":\t").append(text).append("\t\r");
 					}
 				}
 				
@@ -162,6 +174,12 @@ public class WebProcessor implements PageProcessor {
 			    	
 					// 生成 MD5 码
 					String md5 = IDGenerate.EncoderByMd5(jsonData);
+					
+					if (jsonData == null && "".equals(jsonData)) {
+						md5 = IDGenerate.EncoderByMd5(attachment.getContext().toString());
+					}
+					
+					
 						
 					// 持久化元数据
 					Metadata metadata = new Metadata();

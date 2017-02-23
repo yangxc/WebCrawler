@@ -262,6 +262,7 @@ public class WebDownloader extends AbstractDownloader {
         /**
          * 扩展方法，设置附件名称
          */
+        
         Header[] h = httpResponse.getAllHeaders();
         for (Header header : h) {
         	if (header.getName() != null) {
@@ -281,8 +282,15 @@ public class WebDownloader extends AbstractDownloader {
 
     protected byte[] getContent(String charset, HttpResponse httpResponse) throws IOException {
         if (charset == null) {
-            byte[] contentBytes = IOUtils.toByteArray(httpResponse.getEntity().getContent());
-            return contentBytes;
+        	String contentType = httpResponse.getEntity().getContentType().toString();
+            if(contentType == null){
+                return null;
+            }else if (contentType.contains("html")) { // 如果是网页，则抽取其中包含图片的URL，放入后续任务
+                return null;
+            } else {
+                //如果是附件，返回 byte 字节
+            	return IOUtils.toByteArray(httpResponse.getEntity().getContent());
+            }
         }
         return null;
     }
