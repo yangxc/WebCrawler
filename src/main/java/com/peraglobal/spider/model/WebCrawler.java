@@ -3,12 +3,30 @@ package com.peraglobal.spider.model;
 import com.peraglobal.web.model.Proxy;
 import com.peraglobal.web.model.Web;
 
-public class WebCrawler extends Web {
+import java.io.Serializable;
 
-	private static final long serialVersionUID = -316900112629226818L;
-	
+/**
+ *  <code>Proxy.java</code>
+ *  <p>功能：互联网采集
+ *  
+ *  <p>Copyright 安世亚太 2017 All right reserved.
+ *  @author yongqian.liu	
+ *  @version 1.0
+ *  @see 2017-2-24
+ *  </br>最后修改人 无
+ */
+public class WebCrawler extends Web implements Serializable {
+
+	private static final long serialVersionUID = -214309247271059256L;
+
+	/**
+	 * @category 采集规则
+	 */
 	private WebRule webRule;
 	
+	/**
+	 * @category 代理
+	 */
 	private Proxy proxy;
 
 

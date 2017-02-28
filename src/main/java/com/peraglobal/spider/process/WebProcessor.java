@@ -10,6 +10,7 @@ import com.peraglobal.common.CurrentApplicationContext;
 import com.peraglobal.common.IDGenerate;
 import com.peraglobal.mongodb.model.Attachment;
 import com.peraglobal.mongodb.repository.AttachmentRepository;
+import com.peraglobal.spider.model.AttachmentRule;
 import com.peraglobal.spider.model.WebConst;
 import com.peraglobal.spider.model.WebRule;
 import com.peraglobal.spider.model.WebRuleField;
@@ -35,6 +36,8 @@ public class WebProcessor implements PageProcessor {
 	Web web;
 	Proxy proxy;
 	WebRule webRule;
+	AttachmentRule attachmentRule;
+	
 	List<WebRuleField> webRuleFields;
 	
 	@Autowired
@@ -66,6 +69,9 @@ public class WebProcessor implements PageProcessor {
 		// 构建 Json 对象
 		this.webRule = webRule;
 		this.webRuleFields = this.webRule.getWebRuleFields();
+		if (webRule.getAttachmentRule() != null) {
+			attachmentRule = webRule.getAttachmentRule();
+		}
 		return this;
 	}
     
@@ -126,81 +132,78 @@ public class WebProcessor implements PageProcessor {
 		
 		// 属性规则处理，如果具体的页面属性处理
 		if (!list && !detail) {
+			// 附件对象
+			Attachment attachment = null;
+			
+			// 附件下载
+			if (attachmentRule != null) {
+				try {
+					Request request = new Request();
+					request.setUrl(page.getHtml().xpath(attachmentRule.getAttachmentKey()).links().toString());
+					Page pageDown = new WebDownloader().downloads(request, site);
+					byte[] contexts = pageDown.getContentBytes();
+					if (contexts != null) {
+						attachment = new Attachment();
+						// 附件内容
+						attachment.setContext(contexts);
+						// 附件地址
+						attachment.setFilePath(pageDown.getUrl().toString());
+						// 附件名称
+						attachment.setFileName(pageDown.getFileName());
+						// 附件类型
+						attachment.setFileType(pageDown.getFileType());
+					}
+				} catch (Exception e) {
+				}
+			}
+			
+			// 元数据对象
+			StringBuffer sbData = new StringBuffer();
+			// 属性规则文件解析
 			if(webRuleFields != null) {
-				// 元数据对象
-				StringBuffer sbData = new StringBuffer();
-				// 附件对象
-				Attachment attachment = null;
+				
 				for (WebRuleField field : webRuleFields) {
-					System.out.println(page.getHtml().css(".sum").get());
-					
-					
 					String text = page.getHtml().xpath(field.getFieldText()).toString();
 					if (text != null) {
-						// 附件下载功能
-						if (text.indexOf("href") != -1) {
-							try {
-								Request request = new Request();
-								request.setUrl(page.getHtml().xpath(field.getFieldText()).links().toString());
-								Page pageDown = new WebDownloader().downloads(request, site);
-								byte[] contexts = pageDown.getContentBytes();
-								if (contexts != null) {
-									attachment = new Attachment();
-									
-									// 附件内容
-									attachment.setContext(contexts);
-									// 附件地址
-									attachment.setFilePath(pageDown.getUrl().toString());
-									// 附件名称
-									attachment.setFileName(pageDown.getFileName());
-									// 附件类型
-									attachment.setFileType(pageDown.getFileType());
-								}
-							} catch (Exception e) {
-							}
-						}else {
-							// 普通属性功能
-							page.putField(field.getFieldKey(), text);
-							sbData.append(field.getFieldKey()).append(":\t").append(text).append("\t\r");
-						}
+						// 普通属性功能
+						page.putField(field.getFieldKey(), text);
+						sbData.append(field.getFieldKey()).append(":\t").append(text).append("\t\r");
 					}
 				}
-				
+			}
+			
+			// 保存元数据
+			if (sbData.length() > 0 || attachment != null) {
 				// 保存元数据
-				if (true) {
-					// 保存元数据
-					// 采集到数据转换为 Json 格式
-					String jsonData = JSONObject.toJSONString(sbData);
-			    	
-					// 生成 MD5 码
-					String md5 = IDGenerate.EncoderByMd5(jsonData);
+				// 采集到数据转换为 Json 格式
+				String jsonData = JSONObject.toJSONString(sbData);
+		    	
+				// 生成 MD5 码
+				String md5 = IDGenerate.EncoderByMd5(jsonData);
+				
+				if (jsonData == null && "".equals(jsonData)) {
+					md5 = IDGenerate.EncoderByMd5(attachment.getContext().toString());
+				}
+				
+				// 持久化元数据
+				Metadata metadata = new Metadata();
+				metadata.setCrawlerId(web.getCrawlerId());
+				metadata.setMd(md5);
+				metadata.setMetadata(jsonData);
+				try {
+					String metadataId = metadataService.createMetadata(metadata);
 					
-					if (jsonData == null && "".equals(jsonData)) {
-						md5 = IDGenerate.EncoderByMd5(attachment.getContext().toString());
+					// 保存附件
+					if (attachment != null) {
+						attachment.setCrawlerId(web.getCrawlerId());
+						attachment.setMetadataId(metadataId);
+						attachmentRepository.save(attachment);
 					}
-					
-					
-						
-					// 持久化元数据
-					Metadata metadata = new Metadata();
-					metadata.setCrawlerId(web.getCrawlerId());
-					metadata.setMd(md5);
-					metadata.setMetadata(jsonData);
-					try {
-						String metadataId = metadataService.createMetadata(metadata);
-						
-						// 保存附件
-						if (attachment != null) {
-							attachment.setCrawlerId(web.getCrawlerId());
-							attachment.setMetadataId(metadataId);
-							attachmentRepository.save(attachment);
-						}
-						// 监控日志
-						historyService.updatePageCount(web.getCrawlerId());
-					} catch (Exception e1) {
-						historyService.updateExcetion(web.getCrawlerId(), e1.getMessage());
-						e1.printStackTrace();
-					}
+					// 监控日志
+					historyService.updatePageCount(web.getCrawlerId());
+				} catch (Exception e1) {
+					historyService.updateExcetion(web.getCrawlerId(), e1.getMessage());
+					e1.printStackTrace();
 				}
 			}
 		}

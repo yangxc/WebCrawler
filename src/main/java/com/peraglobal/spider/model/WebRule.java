@@ -44,6 +44,12 @@ public class WebRule implements Serializable {
 	 * @category 规则对象
 	 */
 	private List<WebRuleField> webRuleFields;
+	
+	/**
+	 * @category 附件下载规则
+	 */
+	private AttachmentRule attachmentRule;
+	
 
 	public String getCoding() {
 		return coding;
@@ -125,6 +131,12 @@ public class WebRule implements Serializable {
 		this.webRuleFields = webRuleFields;
 	}
 	
+	public AttachmentRule getAttachmentRule() {
+		return attachmentRule;
+	}
 
+	public void setAttachmentRule(AttachmentRule attachmentRule) {
+		this.attachmentRule = attachmentRule;
+	}
 	
 }
