@@ -1,4 +1,4 @@
-package com.peraglobal.web.service;
+package com.peraglobal.mongodb.service;
 
 
 import java.util.Date;
@@ -8,8 +8,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import com.peraglobal.common.IDGenerate;
-import com.peraglobal.web.mapper.MetadataMapper;
-import com.peraglobal.web.model.Metadata;
+import com.peraglobal.mongodb.model.Metadata;
+import com.peraglobal.mongodb.repository.MetadataRepository;
 
 /**
  *  <code>MetadataService.java</code>
@@ -25,7 +25,7 @@ import com.peraglobal.web.model.Metadata;
 public class MetadataService {
 	
 	@Autowired
-    private MetadataMapper metadataMapper;
+    private MetadataRepository metadataRepository;
 
 	
 	/**
@@ -34,7 +34,7 @@ public class MetadataService {
 	 * @return List<Metadata> 元数据列表
 	 */
 	public List<Metadata> getMetadatasByCrawlerId(String crawlerId) throws Exception {
-		return metadataMapper.getMetadatasByCrawlerId(crawlerId);
+		return metadataRepository.findByCrawlerId(crawlerId);
 	}
 	
 	/**
@@ -43,7 +43,7 @@ public class MetadataService {
 	 * @return Metadata 元数据
 	 */
 	public Metadata getMetadata(String metadataId) throws Exception {
-		return metadataMapper.getMetadata(metadataId);
+		return metadataRepository.findByMetadataId(metadataId);
 	}
 
 	/**
@@ -52,7 +52,7 @@ public class MetadataService {
 	 * @return Metadata 元数据
 	 */
 	public Metadata getMetadataByMd(String md) throws Exception {
-		return metadataMapper.getMetadataByMd(md);
+		return metadataRepository.findByMd(md);
 	}
 	
 	/**
@@ -61,13 +61,13 @@ public class MetadataService {
 	 * @throws Exception
 	 */
 	public String createMetadata(Metadata metadata) throws Exception {
-		Metadata meta = metadataMapper.getMetadataByMd(metadata.getMd());
+		Metadata meta = metadataRepository.findByMd(metadata.getMd());
 		if(meta == null) {
-			metadata.setMetadataId(IDGenerate.uuid());
+			metadata.setId(IDGenerate.uuid());
 			metadata.setCreateTime(new Date());
 			metadata.setUpdateTime(new Date());
-			metadataMapper.createMetadata(metadata);
-			return metadata.getMetadataId();
+			metadataRepository.save(metadata);
+			return metadata.getId();
 		}
 		return null;
 	}
@@ -78,7 +78,7 @@ public class MetadataService {
 	 * @throws Exception
 	 */
 	public void removeMetadata(String metadataId) throws Exception {
-		metadataMapper.removeMetadata(metadataId);
+		metadataRepository.deleteByMetadataId(metadataId);
 	}
 	
 	/**
@@ -87,7 +87,7 @@ public class MetadataService {
 	 * @throws Exception
 	 */
 	public void removeMetadataByCrawlerId(String crawlerId) throws Exception {
-		metadataMapper.removeMetadataByCrawlerId(crawlerId);
+		metadataRepository.deleteByCrawlerId(crawlerId);
 	}
 	
 }

@@ -13,11 +13,11 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.peraglobal.web.model.History;
-import com.peraglobal.web.model.Metadata;
+import com.peraglobal.mongodb.model.Metadata;
+import com.peraglobal.mongodb.service.MetadataService;
 import com.peraglobal.spider.model.WebCrawler;
 import com.peraglobal.web.model.Web;
 import com.peraglobal.web.service.HistoryService;
-import com.peraglobal.web.service.MetadataService;
 import com.peraglobal.web.service.WebService;
 
 

@@ -46,12 +46,13 @@ public class Attachment implements Serializable {
 	/**
 	 * @category 文件路径
 	 */
-	private String filePath;
+	private String url;
 	
 	/**
-	 * @category 字符数据
+	 * @category 数据
 	 */
 	private byte[] context;
+
 
 	public String getAttachmentId() {
 		return attachmentId;
@@ -93,12 +94,12 @@ public class Attachment implements Serializable {
 		this.fileType = fileType;
 	}
 
-	public String getFilePath() {
-		return filePath;
+	public String getUrl() {
+		return url;
 	}
 
-	public void setFilePath(String filePath) {
-		this.filePath = filePath;
+	public void setUrl(String url) {
+		this.url = url;
 	}
 
 	public byte[] getContext() {

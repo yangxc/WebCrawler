@@ -1,7 +1,9 @@
-package com.peraglobal.web.model;
+package com.peraglobal.mongodb.model;
 
 import java.io.Serializable;
 import java.util.Date;
+
+import com.mongodb.DBObject;
 
 /**
  *  <code>Metadata.java</code>
@@ -20,7 +22,7 @@ public class Metadata implements Serializable {
 	/**
 	 * @category ID
 	 */
-	private String metadataId;
+	private String id;
 
 	/**
 	 * @category 爬虫 ID
@@ -28,14 +30,34 @@ public class Metadata implements Serializable {
 	private String crawlerId;
 	
 	/**
+	 * @category md5 码
+	 */
+	private String md;
+	
+	/**
+	 * @category URL 地址
+	 */
+	private String url;
+	
+	/**
+	 * @category HTML 元数据
+	 */
+	private byte[] htmlMeta;
+	
+	/**
+	 * @category 数据是否完整：0.完整; 1.不完整
+	 */
+	private String isFull;
+	
+	/**
 	 * @category 元数据 json 格式
 	 */
 	private String metadata;
 	
 	/**
-	 * @category md5 码
+	 * @category 元数据 key value 格式
 	 */
-	private String md;
+	private DBObject kvs;
 	
 	/**
 	 * @category 创建时间
@@ -47,12 +69,12 @@ public class Metadata implements Serializable {
 	 */
 	private Date updateTime;
 
-	public String getMetadataId() {
-		return metadataId;
+	public String getId() {
+		return id;
 	}
 
-	public void setMetadataId(String metadataId) {
-		this.metadataId = metadataId;
+	public void setId(String id) {
+		this.id = id;
 	}
 
 	public String getCrawlerId() {
@@ -63,6 +85,38 @@ public class Metadata implements Serializable {
 		this.crawlerId = crawlerId;
 	}
 
+	public String getMd() {
+		return md;
+	}
+
+	public void setMd(String md) {
+		this.md = md;
+	}
+
+	public String getUrl() {
+		return url;
+	}
+
+	public void setUrl(String url) {
+		this.url = url;
+	}
+
+	public byte[] getHtmlMeta() {
+		return htmlMeta;
+	}
+
+	public void setHtmlMeta(byte[] htmlMeta) {
+		this.htmlMeta = htmlMeta;
+	}
+
+	public String getIsFull() {
+		return isFull;
+	}
+
+	public void setIsFull(String isFull) {
+		this.isFull = isFull;
+	}
+
 	public String getMetadata() {
 		return metadata;
 	}
@@ -71,12 +125,12 @@ public class Metadata implements Serializable {
 		this.metadata = metadata;
 	}
 
-	public String getMd() {
-		return md;
+	public DBObject getKvs() {
+		return kvs;
 	}
 
-	public void setMd(String md) {
-		this.md = md;
+	public void setKvs(DBObject kvs) {
+		this.kvs = kvs;
 	}
 
 	public Date getCreateTime() {
@@ -94,5 +148,6 @@ public class Metadata implements Serializable {
 	public void setUpdateTime(Date updateTime) {
 		this.updateTime = updateTime;
 	}
+
 	
 }
