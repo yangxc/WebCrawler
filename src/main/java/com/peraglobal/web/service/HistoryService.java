@@ -38,7 +38,7 @@ public class HistoryService {
 	
 	/**
 	 * 根据 ID 查询历史记录
-	 * @param metadataId 历史记录 ID
+	 * @param id 历史记录 ID
 	 * @return History 历史记录
 	 */
 	public History getHistory(String id) throws Exception {

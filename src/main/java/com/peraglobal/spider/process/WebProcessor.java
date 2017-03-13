@@ -233,7 +233,7 @@ public class WebProcessor implements PageProcessor {
 				metadata.setUrl(page.getUrl().get()); // url 记录
 				metadata.setHtmlMeta(page.getRawText().getBytes()); // HTML 元数据
 				metadata.setKvs(kvs);
-				metadata.setMetadata(jsonData);
+				metadata.setJsonData(jsonData);
 				try {
 					String metadataId = metadataService.createMetadata(metadata);
 					// 保存附件

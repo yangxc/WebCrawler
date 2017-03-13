@@ -63,11 +63,11 @@ public class MetadataService {
 	public String createMetadata(Metadata metadata) throws Exception {
 		Metadata meta = metadataRepository.findByMd(metadata.getMd());
 		if(meta == null) {
-			metadata.setId(IDGenerate.uuid());
+			metadata.setMetadataId(IDGenerate.uuid());
 			metadata.setCreateTime(new Date());
 			metadata.setUpdateTime(new Date());
 			metadataRepository.save(metadata);
-			return metadata.getId();
+			return metadata.getMetadataId();
 		}
 		return null;
 	}

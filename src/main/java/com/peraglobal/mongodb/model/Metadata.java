@@ -3,6 +3,8 @@ package com.peraglobal.mongodb.model;
 import java.io.Serializable;
 import java.util.Date;
 
+import org.springframework.data.annotation.Id;
+
 import com.mongodb.DBObject;
 
 /**
@@ -22,7 +24,8 @@ public class Metadata implements Serializable {
 	/**
 	 * @category ID
 	 */
-	private String id;
+	@Id
+	private String metadataId;
 
 	/**
 	 * @category 爬虫 ID
@@ -52,7 +55,7 @@ public class Metadata implements Serializable {
 	/**
 	 * @category 元数据 json 格式
 	 */
-	private String metadata;
+	private String jsonData;
 	
 	/**
 	 * @category 元数据 key value 格式
@@ -69,12 +72,12 @@ public class Metadata implements Serializable {
 	 */
 	private Date updateTime;
 
-	public String getId() {
-		return id;
+	public String getMetadataId() {
+		return metadataId;
 	}
 
-	public void setId(String id) {
-		this.id = id;
+	public void setMetadataId(String metadataId) {
+		this.metadataId = metadataId;
 	}
 
 	public String getCrawlerId() {
@@ -117,12 +120,12 @@ public class Metadata implements Serializable {
 		this.isFull = isFull;
 	}
 
-	public String getMetadata() {
-		return metadata;
+	public String getJsonData() {
+		return jsonData;
 	}
 
-	public void setMetadata(String metadata) {
-		this.metadata = metadata;
+	public void setJsonData(String jsonData) {
+		this.jsonData = jsonData;
 	}
 
 	public DBObject getKvs() {
@@ -148,6 +151,8 @@ public class Metadata implements Serializable {
 	public void setUpdateTime(Date updateTime) {
 		this.updateTime = updateTime;
 	}
+
+	
 
 	
 }
